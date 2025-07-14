@@ -62,3 +62,5 @@ jobs:
 
         with:
           commenter_type: validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
