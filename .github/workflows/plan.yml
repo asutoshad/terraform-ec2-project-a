@@ -1,0 +1,54 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out=tfplan.binary | tee tfplan.txt
+
+      - name: Read Plan Summary
+        id: read_plan
+        run: |
+          SUMMARY=$(cat tfplan.txt | head -c 65000)
+          SUMMARY="${SUMMARY//'%'/'%25'}"
+          SUMMARY="${SUMMARY//$'\n'/'%0A'}"
+          SUMMARY="${SUMMARY//$'\r'/'%0D'}"
+          echo "plan_summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan.binary
+
+      # - name: Comment Terraform Plan
+      #   if: always()
+      #   uses: GetTerminus/terraform-pr-commenter@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      #   with:
+      #     commenter_type: plan
+      #     commenter_input: ${{ steps.read_plan.outputs.plan_summary || 'Terraform plan not available.' }}
+
