@@ -52,7 +52,7 @@ resource "aws_iam_role_policy" "asutosh_s3_write" {
       {
         Effect   = "Allow",
         Action   = ["s3:PutObject"],
-        Resource = "*"
+        Resource = "arn:aws:s3:::terminus-bucket-123/*"
       }
     ]
   })
@@ -71,6 +71,16 @@ resource "aws_instance" "terminus_ec2" {
   key_name                    = "asutosh-key"
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.asutosh_profile.name
+
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  
+  root_block_device {
+    encrypted = true
+  }
 
   tags = {
     Name    = "terminus-ec2"
