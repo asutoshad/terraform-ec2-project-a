@@ -9,7 +9,7 @@ terraform {
   required_version = ">= 1.3.0"
 
   backend "s3" {
-    bucket = "project-a-tf-state"
+    bucket = "asutosh-project-a-tf-state"
     key    = "ec2/terraform.tfstate"
     region = "us-east-1"
   }
@@ -17,8 +17,6 @@ terraform {
 
 provider "aws" {
   region     = "us-east-1"
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
 }
 
 resource "aws_iam_role" "asutoshrole" {
@@ -95,3 +93,4 @@ output "iam_role_arn" {
 output "instance_id" {
   value = aws_instance.terminus_ec2.id
 }
+
