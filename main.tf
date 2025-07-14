@@ -35,6 +35,7 @@ resource "aws_iam_role" "asutoshrole" {
       }
     ]
   })
+  
 
   tags = {
     Creator = "asutosh"
