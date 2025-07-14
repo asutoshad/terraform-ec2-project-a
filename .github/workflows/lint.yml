@@ -30,7 +30,11 @@ jobs:
         run: terraform init -input=false
 
       - name: Run TFLint
-        run: tflint || true
+        id: tflint
+        run: |
+          tflint --format compact > tflint_output.txt
+          echo "TFLINT_EXIT_CODE=$?" >> $GITHUB_ENV
+        continue-on-error: true
 
       - name: Comment TFLint Results
         if: failure()
