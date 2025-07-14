@@ -43,12 +43,12 @@ jobs:
           name: tfplan
           path: tfplan.binary
 
-      - name: Comment Terraform Plan
-        if: always()
-        uses: GetTerminus/terraform-pr-commenter@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-        with:
-          commenter_type: plan
-          commenter_input: ${{ steps.read_plan.outputs.plan_summary || 'Terraform plan not available.' }}
+      # - name: Comment Terraform Plan
+      #   if: always()
+      #   uses: GetTerminus/terraform-pr-commenter@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      #   with:
+      #     commenter_type: plan
+      #     commenter_input: ${{ steps.read_plan.outputs.plan_summary || 'Terraform plan not available.' }}
 
