@@ -26,7 +26,16 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan.binary > tfplan.txt
+        run: terraform plan -no-color -out=tfplan.binary | tee tfplan.txt
+
+      - name: Read Plan Summary
+        id: read_plan
+        run: |
+          SUMMARY=$(cat tfplan.txt | head -c 65000)
+          SUMMARY="${SUMMARY//'%'/'%25'}"
+          SUMMARY="${SUMMARY//$'\n'/'%0A'}"
+          SUMMARY="${SUMMARY//$'\r'/'%0D'}"
+          echo "plan_summary=$SUMMARY" >> "$GITHUB_OUTPUT"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
